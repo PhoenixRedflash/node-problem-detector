@@ -7,6 +7,9 @@ on:
     paths:
       - version.txt
 
+permissions:
+  contents: read
+
 jobs:
   tag:
     if: ${{ github.repository == 'kubernetes/node-problem-detector' }}
@@ -14,7 +17,12 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
         with:
           fetch-depth: 0
       - run: /usr/bin/git config --global user.email actions@github.com
